@@ -46,7 +46,7 @@ const ProfileModal = () => {
       aspect: [4, 3],
       quality: 0.5,
     });
-    console.log("result", result);
+    
     if (!result.canceled) {
       setUserDta({ ...userDta, image: result.assets[0] });
     }
@@ -55,19 +55,23 @@ const ProfileModal = () => {
   const onSubmit = async () => {
     let { name, image } = userDta;
     if (!name.trim()) {
-      Alert.alert("User", "please  fill all the fields");
+      Alert.alert("User", "please fill all the fields");
       return;
     }
+    
     setLoading(true);
     const res = await updateUser(user?.uid as string, userDta);
     setLoading(false);
-    if (!res.success) {
-      updateUserData(user?.uid as string);
-      router.back();
+    
+    if (res.success) {
+      // Actualiza los datos del usuario y cierra el modal
+      await updateUserData(user?.uid as string);
+      router.back(); // Redirige solo si la actualización fue exitosa
     } else {
-      Alert.alert("User", res.msg);
+      Alert.alert("User", res.msg); // Muestra el mensaje de error
     }
   };
+  
   return (
     <ModalWrapper>
       <View style={styles.container}>
