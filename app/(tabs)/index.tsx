@@ -6,6 +6,7 @@ import { useAuth } from "@/context/authContext";
 import { signOut } from "firebase/auth";
 import { auth } from "@/config/firebase";
 import { router } from "expo-router";
+import ScreenWrapper from "@/components/ScreenWrapper";
 
 const Home = () => {
   const { logout } = useAuth();
@@ -21,12 +22,12 @@ const Home = () => {
   };
 
   return (
-    <View>
-      <Text>Home</Text>
+    <ScreenWrapper>
+      <Typo>Home</Typo>
       <ButtomCustom onPress={handleLogout}>
         <Typo color={colors.black}>Logout</Typo>
       </ButtomCustom>
-    </View>
+    </ScreenWrapper>
   );
 };
 
