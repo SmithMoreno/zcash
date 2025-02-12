@@ -148,6 +148,7 @@ export type UserDataType = {
 
 export type AuthContextType = {
   user: UserType;
+  logout: () => Promise<void>;
   setUser: Function;
   login: (
     email: string,

@@ -11,10 +11,10 @@ import { useRouter } from "expo-router";
 const Welcome = () => {
   const router = useRouter();
   const handleLogin = () => {
-    router.push("/login");
+    router.push("/(auth)/login");
   };
   const handleRegister = () => {
-    router.push("/register");
+    router.push("/(auth)/register");
   };
   return (
     <ScreenWrapper>

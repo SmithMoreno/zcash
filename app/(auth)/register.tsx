@@ -1,129 +1,110 @@
 import React, { useRef } from "react";
+import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import Animated from "react-native-reanimated";
 import { Link } from "expo-router";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { Typo } from "@/components/Typo";
 import { colors, spacingX, spacingY } from "@/constants/theme";
-import { Alert, StyleSheet, View } from "react-native";
 import { verticalScale } from "../../util/styling";
 import { BackButton } from "@/components/BackButton";
 import Input from "@/components/Input";
 import * as Icons from "phosphor-react-native";
 import { ButtomCustom } from "@/components/ButtomCustom";
+import { useAuth } from "@/context/authContext";
+
 const Register = () => {
+  const { register: registerUser } = useAuth();
   const nameRef = useRef("");
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const [isLoading, setIsLoading] = React.useState(false);
 
-  const handleSumit = async () => {
+  const handleSubmit = async () => {
     if (!emailRef.current || !passwordRef.current || !nameRef.current) {
       Alert.alert("Sign up", "Please fill all the fields");
       return;
     }
-    console.log("email:", emailRef.current);
-    console.log("username:", nameRef.current);
-    console.log("password:", passwordRef.current);
-    console.log("good job");
+    setIsLoading(true);
+    const res = await registerUser(
+      emailRef.current,
+      passwordRef.current,
+      nameRef.current
+    );
+    setIsLoading(false);
+    if (!res.success) {
+      Alert.alert("Sign up", res.msg);
+    }
   };
+
   return (
     <ScreenWrapper>
-      <View style={styles.container}>
-        {/*back button*/}
-        <BackButton iconSize={28} />
-        <View style={{ gap: 5, marginTop: spacingY._20 }}>
-          <Typo size={30} fontWeight={"800"}>
-            Let's
-          </Typo>
-          <Typo size={30} fontWeight={"800"}>
-            Get Started
-          </Typo>
-        </View>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
+            {/* Back Button */}
+            <BackButton iconSize={28} />
 
-        {/*form*/}
-        <View style={styles.forn}>
-          <Typo size={16} color={colors.textLight} fontWeight={"500"}>
-            Create an account to Coins Exchange
-          </Typo>
-          {/*input*/}
-          <Input
-            onChangeText={(value) => (nameRef.current = value)}
-            placeholder="Name"
-            icon={
-              <Icons.User
-                weight="fill"
-                size={verticalScale(26)}
-                color={colors.neutral300}
-              />
-            }
-          />
-          <Input
-            onChangeText={(value) => (emailRef.current = value)}
-            placeholder="Email"
-            icon={
-              <Icons.At
-                weight="fill"
-                size={verticalScale(26)}
-                color={colors.neutral300}
-              />
-            }
-          />
-          <Input
-            onChangeText={(value) => (passwordRef.current = value)}
-            secureTextEntry
-            placeholder="Password"
-            icon={
-              <Icons.Lock
-                weight="fill"
-                size={verticalScale(26)}
-                color={colors.neutral300}
-              />
-            }
-          />
+            {/* Title */}
+            <View style={{ gap: 5, marginTop: spacingY._20 }}>
+              <Typo size={30} fontWeight={"800"}>Let's</Typo>
+              <Typo size={30} fontWeight={"800"}>Get Started</Typo>
+            </View>
 
-          <ButtomCustom loading={isLoading} onPress={handleSumit}>
-            <Typo size={21} fontWeight={"700"} color={colors.black}>
-              Sign Up
-            </Typo>
-          </ButtomCustom>
-        </View>
+            {/* Form */}
+            <View style={styles.form}>
+              <Typo size={16} color={colors.textLight} fontWeight={"500"}>
+                Create an account to Coins Exchange
+              </Typo>
+              <Input
+                onChangeText={(value) => (nameRef.current = value)}
+                placeholder="Name"
+                icon={<Icons.User weight="fill" size={verticalScale(26)} color={colors.neutral300} />}
+              />
+              <Input
+                onChangeText={(value) => (emailRef.current = value)}
+                placeholder="Email"
+                icon={<Icons.At weight="fill" size={verticalScale(26)} color={colors.neutral300} />}
+              />
+              <Input
+                onChangeText={(value) => (passwordRef.current = value)}
+                secureTextEntry
+                placeholder="Password"
+                icon={<Icons.Lock weight="fill" size={verticalScale(26)} color={colors.neutral300} />}
+              />
+              <ButtomCustom loading={isLoading} onPress={handleSubmit}>
+                <Typo size={21} fontWeight={"700"} color={colors.black}>Sign Up</Typo>
+              </ButtomCustom>
+            </View>
 
-        {/*footer*/}
-        <View style={styles.footer}>
-          <Typo size={14} color={colors.text}>
-            Already have an account?
-          </Typo>
-          <Link href={"/login"} style={styles.footerText}>
-            <Typo fontWeight={"700"} size={15} color={colors.primary}>
-              Login
-            </Typo>
-          </Link>
-        </View>
-      </View>
+            {/* Footer */}
+            <View style={styles.footer}>
+              <Typo size={14} color={colors.text}>Already have an account?</Typo>
+              <Link href={"/login"} style={styles.footerText}>
+                <Typo fontWeight={"700"} size={15} color={colors.primary}>Login</Typo>
+              </Link>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenWrapper>
   );
 };
 
-export default Register;
-
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 10, // Espacio para el teclado
+  },
   container: {
     flex: 1,
     gap: spacingY._30,
     paddingHorizontal: spacingX._20,
   },
-  welcomeText: {
-    fontSize: verticalScale(20),
-    fontWeight: "bold",
-    color: colors.text,
-  },
-  forn: {
+  form: {
     gap: spacingY._20,
-  },
-  forgotPassword: {
-    textAlign: "right",
-    color: colors.text,
-    fontWeight: "500",
   },
   footer: {
     flexDirection: "row",
@@ -133,7 +114,8 @@ const styles = StyleSheet.create({
   },
   footerText: {
     textAlign: "center",
-    color: colors.text,
     fontSize: verticalScale(15),
   },
 });
+
+export default Register;
