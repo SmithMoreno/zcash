@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import {
   Alert,
   KeyboardAvoidingView,
@@ -22,20 +22,33 @@ import { useAuth } from "@/context/authContext";
 
 const Login = () => {
   const { login: loginUser } = useAuth();
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!emailRef.current || !passwordRef.current) {
+    if (!email || !password) {
       Alert.alert("Please fill all the fields");
       return;
     }
+
+    // Validación básica de correo
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert("Please enter a valid email address");
+      return;
+    }
+
     setIsLoading(true);
-    const res = await loginUser(emailRef.current, passwordRef.current);
-    setIsLoading(false);
-    if (!res.success) {
-      Alert.alert("Login", res.msg);
+    try {
+      const res = await loginUser(email, password);
+      if (!res.success) {
+        Alert.alert("Login", res.msg);
+      }
+    } catch (error) {
+      Alert.alert("Login", "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -72,7 +85,7 @@ const Login = () => {
 
                 {/* Inputs */}
                 <Input
-                  onChangeText={(value) => (emailRef.current = value)}
+                  onChangeText={setEmail}
                   placeholder="Email"
                   icon={
                     <Icons.At
@@ -81,9 +94,11 @@ const Login = () => {
                       color={colors.neutral300}
                     />
                   }
+                  accessibilityLabel="Correo electrónico"
+                  accessibilityHint="Introduce tu correo electrónico"
                 />
                 <Input
-                  onChangeText={(value) => (passwordRef.current = value)}
+                  onChangeText={setPassword}
                   secureTextEntry
                   placeholder="Password"
                   icon={
@@ -93,6 +108,8 @@ const Login = () => {
                       color={colors.neutral300}
                     />
                   }
+                  accessibilityLabel="Contraseña"
+                  accessibilityHint="Introduce tu contraseña"
                 />
 
                 <Link href={"/"} style={styles.forgotPassword}>
@@ -128,8 +145,6 @@ const Login = () => {
   );
 };
 
-export default Login;
-
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
@@ -161,3 +176,5 @@ const styles = StyleSheet.create({
     fontSize: verticalScale(15),
   },
 });
+
+export default Login;

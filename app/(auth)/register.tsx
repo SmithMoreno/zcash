@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useState } from "react";
 import { Alert, StyleSheet, View, ScrollView, KeyboardAvoidingView, Platform } from "react-native";
 import Animated from "react-native-reanimated";
 import { Link } from "expo-router";
@@ -14,25 +14,34 @@ import { useAuth } from "@/context/authContext";
 
 const Register = () => {
   const { register: registerUser } = useAuth();
-  const nameRef = useRef("");
-  const emailRef = useRef("");
-  const passwordRef = useRef("");
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!emailRef.current || !passwordRef.current || !nameRef.current) {
+    if (!email || !password || !name) {
       Alert.alert("Sign up", "Please fill all the fields");
       return;
     }
+
+    // Validación básica de correo
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      Alert.alert("Sign up", "Please enter a valid email address");
+      return;
+    }
+
     setIsLoading(true);
-    const res = await registerUser(
-      emailRef.current,
-      passwordRef.current,
-      nameRef.current
-    );
-    setIsLoading(false);
-    if (!res.success) {
-      Alert.alert("Sign up", res.msg);
+    try {
+      const res = await registerUser(email, password, name);
+      if (!res.success) {
+        Alert.alert("Sign up", res.msg);
+      }
+    } catch (error) {
+      Alert.alert("Sign up", "An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -59,20 +68,26 @@ const Register = () => {
                 Create an account to Coins Exchange
               </Typo>
               <Input
-                onChangeText={(value) => (nameRef.current = value)}
+                onChangeText={setName}
                 placeholder="Name"
                 icon={<Icons.User weight="fill" size={verticalScale(26)} color={colors.neutral300} />}
+                accessibilityLabel="Nombre"
+                accessibilityHint="Introduce tu nombre"
               />
               <Input
-                onChangeText={(value) => (emailRef.current = value)}
+                onChangeText={setEmail}
                 placeholder="Email"
                 icon={<Icons.At weight="fill" size={verticalScale(26)} color={colors.neutral300} />}
+                accessibilityLabel="Correo electrónico"
+                accessibilityHint="Introduce tu correo electrónico"
               />
               <Input
-                onChangeText={(value) => (passwordRef.current = value)}
+                onChangeText={setPassword}
                 secureTextEntry
                 placeholder="Password"
                 icon={<Icons.Lock weight="fill" size={verticalScale(26)} color={colors.neutral300} />}
+                accessibilityLabel="Contraseña"
+                accessibilityHint="Introduce tu contraseña"
               />
               <ButtomCustom loading={isLoading} onPress={handleSubmit}>
                 <Typo size={21} fontWeight={"700"} color={colors.black}>Sign Up</Typo>

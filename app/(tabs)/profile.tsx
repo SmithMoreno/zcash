@@ -1,11 +1,10 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, StyleSheet,  TouchableOpacity, View } from "react-native";
 import { Image } from "expo-image";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import { verticalScale } from "@/util/styling";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { Header } from "@/components/Header";
-import { BackButton } from "@/components/BackButton";
 import { useAuth } from "@/context/authContext";
 import { Typo } from "@/components/Typo";
 import { getProfileImage } from "@/services/imageService";
