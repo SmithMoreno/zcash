@@ -8,7 +8,7 @@ const SplashScreen = () => {
   const route = useRouter();
   useEffect(() => {
     setTimeout(() => {
-      route.replace('/welcome');
+      route.replace("/welcome");
     }, 3000);
   }, []);
   return (
@@ -18,7 +18,6 @@ const SplashScreen = () => {
         resizeMode="contain"
         source={img.splashImage}
       />
-      <Text>index</Text>
     </View>
   );
 };

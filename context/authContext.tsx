@@ -19,23 +19,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const router = useRouter();
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (firebaseUser) => {
+    const unsub = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        setUser({
+        const userData = {
           uid: firebaseUser?.uid,
           email: firebaseUser?.email,
           name: firebaseUser?.displayName,
-        });
-        updateUserData(firebaseUser.uid);
+        };
+        setUser(userData);
+        await updateUserData(firebaseUser.uid); // Asegurar datos antes de navegar
         router.replace("/(tabs)");
       } else {
         setUser(null);
         router.replace("/(auth)/welcome");
       }
     });
-
+  
     return () => unsub();
   }, []);
+  
   const login = async (email: string, password: string) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
@@ -91,15 +93,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
   const logout = async () => {
-    const { setUser } = useAuth();
     try {
       await signOut(auth);
-      setUser(null); // Borra el estado del usuario
-      router.replace("/(auth)/welcome"); // Redirige a la pantalla de bienvenida
+      setUser(null); // Limpia el estado de usuario
+      router.replace("/(auth)/welcome"); // Redirige correctamente
     } catch (error: any) {
       console.error("Logout error:", error.message);
     }
   };
+  
 
   const contextValue = {
     user,
