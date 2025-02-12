@@ -12,9 +12,9 @@ const TabsLayout = () => {
         }}
       >
         <Tabs.Screen name="index" />
+        <Tabs.Screen name="staticts" />
         <Tabs.Screen name="wallet" />
         <Tabs.Screen name="profile" />
-        <Tabs.Screen name="staticts" />
       </Tabs>
     </AuthProvider>
   );
