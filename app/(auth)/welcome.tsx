@@ -6,14 +6,26 @@ import { colors, spacingX, spacingY } from "@/constants/theme";
 import { verticalScale } from "@/util/styling";
 import { img } from "@/constants/img";
 import { ButtomCustom } from "@/components/ButtomCustom";
+import { useRouter } from "expo-router";
 
 const Welcome = () => {
+  const router = useRouter();
+  const handleLogin = () => {
+    router.push("/login");
+  };
+  const handleRegister = () => {
+    router.push("/register");
+  };
   return (
     <ScreenWrapper>
       <View style={styles.container}>
         {/* Login Button  &  img*/}
         <View>
-          <TouchableOpacity activeOpacity={0.7} style={styles.loginButton}>
+          <TouchableOpacity
+            onPress={handleLogin}
+            activeOpacity={0.7}
+            style={styles.loginButton}
+          >
             <Typo fontWeight={"500"}>Sign In</Typo>
           </TouchableOpacity>
           <Animated.Image
@@ -61,7 +73,7 @@ const Welcome = () => {
               .damping(12)}
             style={styles.buttonContainer}
           >
-            <ButtomCustom>
+            <ButtomCustom onPress={handleRegister}>
               <Typo fontWeight={"600"} size={22} color={colors.neutral900}>
                 Get Started
               </Typo>
