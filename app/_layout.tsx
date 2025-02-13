@@ -7,6 +7,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
         <Stack.Screen name="walletModal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="transationModal" options={{ presentation: "modal" }} />
         {/* Agrega más pantallas aquí si es necesario */}
       </Stack>
     </AuthProvider>

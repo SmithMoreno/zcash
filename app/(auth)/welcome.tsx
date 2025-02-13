@@ -10,11 +10,11 @@ import { useRouter } from "expo-router";
 
 const Welcome = () => {
   const router = useRouter();
-  
+
   const handleLogin = () => {
     router.push("/(auth)/login");
   };
-  
+
   const handleRegister = () => {
     router.push("/(auth)/register");
   };
@@ -36,11 +36,11 @@ const Welcome = () => {
           <Animated.Image
             entering={FadeIn.duration(2000)}
             resizeMode="contain"
-            source={img.welcome}
+            source={img.cashCoin}
             style={styles.welcomeImage} // Corregido el nombre
           />
         </View>
-        
+
         {/* Footer */}
         <View style={styles.footer}>
           <Animated.View
@@ -56,8 +56,15 @@ const Welcome = () => {
           </Animated.View>
 
           <Animated.View
-            entering={FadeInDown.duration(2000).delay(1000).springify().damping(12)}
-            style={{ alignItems: "center", marginVertical: 2 }} // Cambiado gap por marginVertical
+            entering={FadeInDown.duration(2000)
+              .delay(1000)
+              .springify()
+              .damping(12)}
+            style={{
+              alignItems: "center",
+              marginVertical: 2,
+              marginTop: spacingY._10,
+            }} // Cambiado gap por marginVertical
           >
             <Typo size={17} color={colors.textLight}>
               Finances must be arranged to set a better
@@ -69,10 +76,13 @@ const Welcome = () => {
 
           {/* Button */}
           <Animated.View
-            entering={FadeInDown.duration(2000).delay(2000).springify().damping(12)}
+            entering={FadeInDown.duration(2000)
+              .delay(2000)
+              .springify()
+              .damping(12)}
             style={styles.buttonContainer}
           >
-            <ButtomCustom onPress={handleRegister}>
+            <ButtomCustom style={{ marginTop: spacingY._20 }}  onPress={handleRegister}>
               <Typo fontWeight={"600"} size={22} color={colors.neutral900}>
                 Get Started
               </Typo>
@@ -90,7 +100,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: spacingX._7,
   },
-  welcomeImage: { // Corregido el nombre
+  welcomeImage: {
+    // Corregido el nombre
     width: "100%",
     height: verticalScale(300),
     alignSelf: "center",

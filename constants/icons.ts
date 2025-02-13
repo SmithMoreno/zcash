@@ -1,3 +1,3 @@
 export const icons = {
-    add: require("../assets/icons/add.png"),
+    logo: require("../assets/icons/icon.png"),
 }

@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import { Image, StyleSheet, View } from "react-native";
 import { colors } from "@/constants/theme";
 import { img } from "@/constants/img";
+import { icons } from "@/constants/icons";
 
 const SplashScreen = () => {
   const route = useRouter();
@@ -21,7 +22,7 @@ const SplashScreen = () => {
       <Image
         style={styles.logo}
         resizeMode="contain"
-        source={img.splashImage}
+        source={icons.logo}
       />
     </View>
   );
