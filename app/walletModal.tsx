@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import * as Icons from "phosphor-react-native";
 import { colors, spacingX, spacingY } from "@/constants/theme";
 import { scale, verticalScale } from "@/util/styling";
 import { ModalWrapper } from "@/components/ModalWrapper";
@@ -12,7 +13,7 @@ import { WalletType } from "@/types/types";
 import { ButtomCustom } from "@/components/ButtomCustom";
 import { useAuth } from "@/context/authContext";
 import { ImageUpload } from "@/components/ImageUpload";
-import { createOrUpdateWallet } from "@/services/walletService";
+import { createOrUpdateWallet, deleteWallet } from "@/services/walletService";
 
 const WalletModal = () => {
   const { user, updateUserData } = useAuth();
@@ -22,6 +23,18 @@ const WalletModal = () => {
   });
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+
+  const oldWallet: { name: string; image: string; id: string } =
+    useLocalSearchParams();
+
+  useEffect(() => {
+    if (oldWallet?.id) {
+      setWallet({
+        name: oldWallet?.name,
+        image: oldWallet?.image,
+      });
+    }
+  }, []);
 
   const onSubmit = async () => {
     let { name, image } = wallet;
@@ -35,10 +48,10 @@ const WalletModal = () => {
       image,
       uid: user?.uid,
     };
-    // todo: Include wallet id if updating
+
+    if (oldWallet?.id) data.id = oldWallet?.id;
     setLoading(true);
     const res = await createOrUpdateWallet(data);
-    console.log("res", res);
     setLoading(false);
     //console.log("resultad", res);
     if (res.success) {
@@ -47,6 +60,35 @@ const WalletModal = () => {
       Alert.alert("Wallet", res.msg); // Muestra el mensaje de error
     }
   };
+  const onDelete = async () => {
+    if (!oldWallet?.id) return;
+    setLoading(true);
+    const res = await deleteWallet(oldWallet?.id);
+    setLoading(false);
+    if (res.success) {
+      router.back();
+    } else {
+      Alert.alert("wallet", res.msg);
+    }
+  };
+  const showAlertDelete = () => {
+    Alert.alert(
+      "Confirm",
+      "Are you sure you want to do this?\nThis action will remove all the transactions related to this wallet",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel delete"),
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: () => onDelete(),
+          style: "destructive",
+        },
+      ]
+    );
+  };
 
   return (
     <ModalWrapper>
@@ -54,7 +96,7 @@ const WalletModal = () => {
         <Header
           style={{ marginBottom: spacingY._15 }}
           leftIcon={<BackButton />}
-          title="New Wallet"
+          title={oldWallet?.id ? "Edit Wallet" : "Add Wallet"}
         />
         {/* form*/}
         <ScrollView contentContainerStyle={styles.form}>
@@ -86,9 +128,25 @@ const WalletModal = () => {
       </View>
       {/* footer*/}
       <View style={styles.footer}>
+        {oldWallet?.id && !loading && (
+          <ButtomCustom
+            onPress={showAlertDelete}
+            style={{
+              backgroundColor: colors.rose,
+              paddingHorizontal: spacingX._15,
+            }}
+          >
+            <Icons.Trash
+              size={verticalScale(24)}
+              color={colors.white}
+              weight="bold"
+            />
+          </ButtomCustom>
+        )}
+
         <ButtomCustom loading={loading} style={{ flex: 1 }} onPress={onSubmit}>
           <Typo fontWeight={"700"} color={colors.black}>
-            Add Wallet
+            {oldWallet?.id ? "Edit Wallet" : "Add Wallet"}
           </Typo>
         </ButtomCustom>
       </View>
