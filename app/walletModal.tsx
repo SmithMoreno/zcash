@@ -38,9 +38,9 @@ const WalletModal = () => {
     // todo: Include wallet id if updating
     setLoading(true);
     const res = await createOrUpdateWallet(data);
+    console.log("res", res);
     setLoading(false);
-    console.log("resultad", res);
-
+    //console.log("resultad", res);
     if (res.success) {
       router.back(); // Redirige solo si la actualización fue exitosa
     } else {

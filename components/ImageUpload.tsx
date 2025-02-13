@@ -10,7 +10,7 @@ import { scale, verticalScale } from "@/util/styling";
 import { getFilePath } from "@/services/imageService";
 
 export const ImageUpload = ({
-  file,
+  file = null,
   onSelect,
   onClear,
   containerStyle,
@@ -18,18 +18,17 @@ export const ImageUpload = ({
   placeholder,
 }: ImageUploadProps) => {
   const pickImage = async () => {
-     let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ["images"],
-          allowsEditing: true,
-          aspect: [4, 3],
-          quality: 0.5,
-        });
-        
-        if (!result.canceled) {
-          onSelect(result.assets[0]);
-        }
-      
-  }
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      // allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5,
+    });
+
+    if (!result.canceled) {
+      onSelect(result.assets[0]);
+    }
+  };
   return (
     <View>
       {!file && (
@@ -42,16 +41,18 @@ export const ImageUpload = ({
         </TouchableOpacity>
       )}
       {file && (
-        <View style={[styles.image, containerStyle && containerStyle]}>
+        <View style={[styles.image, imageStyle && imageStyle]}>
           <Image
             style={{ flex: 1 }}
             source={getFilePath(file)}
             contentFit="cover"
             transition={100}
           />
-          <TouchableOpacity 
-          onPress={onClear}
-           activeOpacity={0.7} style={styles.deleteIcon}>
+          <TouchableOpacity
+            onPress={onClear}
+            activeOpacity={0.7}
+            style={styles.deleteIcon}
+          >
             <Icons.XCircle
               weight="fill"
               size={verticalScale(24)}
@@ -89,7 +90,7 @@ const styles = StyleSheet.create({
     top: scale(6),
     right: scale(6),
     shadowColor: colors.black,
-    shadowOffset:{width: 0, height: 5},
+    shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 1,
     shadowRadius: 10,
   },
