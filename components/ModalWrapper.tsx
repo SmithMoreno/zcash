@@ -18,7 +18,7 @@ export const ModalWrapper = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: isiOS ? spacingY._15 : 50,
+    paddingTop: isiOS ? spacingY._15 : 20,
     paddingBottom:isiOS ? spacingY._20 : spacingY._10,
   },
 });
