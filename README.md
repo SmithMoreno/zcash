@@ -1,50 +1,61 @@
-# Welcome to your Expo app 👋
+# Controle Financeiro
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## Get started
 
-1. Install dependencies
 
+## Descripción del Proyecto
+"Controle Financeiro" es una aplicación móvil desarrollada en React Native que permite a los usuarios gestionar sus gastos e ingresos de manera eficiente. La aplicación ofrece una interfaz intuitiva y funcionalidades avanzadas para ayudar a los usuarios a tomar decisiones financieras informadas.
+
+## Tecnologías Utilizadas
+- **React Native:** Framework principal para el desarrollo de aplicaciones móviles.
+- **Firebase:** Para la autenticación de usuarios y almacenamiento en la nube.
+- **Cloudinary:** Para la gestión y almacenamiento de imágenes.
+- **Redux:** Para la gestión del estado de la aplicación.
+- **Axios:** Para realizar solicitudes HTTP.
+
+## Estructura del Proyecto
+
+### Modularización
+La aplicación está estructurada en módulos, cada uno responsable de una funcionalidad específica. Esto facilita el mantenimiento y la escalabilidad del código. La estructura básica es la siguiente:
+
+/src
+/components          # Componentes reutilizables
+/screens             # Pantallas de la aplicación
+/redux              # Estado global y acciones
+/services           # Servicios de API y lógica de negocio
+/assets             # Imágenes y otros recursos
+
+
+### Componentes Reutilizables
+Se han creado varios componentes reutilizables para optimizar el desarrollo y la consistencia de la interfaz. Algunos ejemplos incluyen:
+
+- **Button:** Componente de botón personalizable.
+- **InputField:** Campo de entrada con validaciones.
+- **Header:** Encabezado común para todas las pantallas.
+
+## Datos Almacenados
+Los datos se almacenan en Firebase Firestore, lo que permite una sincronización en tiempo real y un acceso rápido. Los tipos de datos incluyen:
+
+- **Transacciones:** Registros de ingresos y gastos.
+- **Usuarios:** Información de autenticación y perfil.
+- **Categorías:** Clasificación de gastos e ingresos.
+
+## Integración con Firebase
+La aplicación utiliza Firebase para:
+
+- **Autenticación:** Registro y inicio de sesión de usuarios.
+- **Base de Datos:** Almacenamiento de datos de transacciones y usuarios.
+
+## Integración con Cloudinary
+Cloudinary se utiliza para almacenar y gestionar imágenes de perfil y otros recursos visuales de manera eficiente. Esto permite una carga rápida y una gestión sencilla de los activos multimedia.
+
+## Instalación
+Para instalar y ejecutar la aplicación localmente, sigue estos pasos:
+
+1. Clona el repositorio:
    ```bash
-   npm install
-   ```
+   git clone https://github.com/tu_usuario/controle-financeiro.git
+   cd controle-financeiro
+2 .npm install
 
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+3.npm start
