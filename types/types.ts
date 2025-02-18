@@ -106,7 +106,7 @@ export type TransactionListType = {
 export type TransactionItemProps = {
   item: TransactionType;
   index: number;
-  handleClick: Function;
+
 };
 
 export interface InputProps extends TextInputProps {

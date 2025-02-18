@@ -10,14 +10,35 @@ import { Typo } from "./Typo";
 import { scale, verticalScale } from "@/util/styling";
 import { colors, spacingX, spacingY } from "@/constants/theme";
 import { img } from "@/constants/img";
+import { useAuth } from "@/context/authContext";
+import useFetchData from "@/hooks/useFetchData";
+import { WalletType } from "@/types/types";
+import { useRouter } from "expo-router";
+import { where, orderBy } from "firebase/firestore";
 
 export const HomeCards = () => {
-  const handledArrowDown = () => {
-    console.log("Pressed down");
+  const { user } = useAuth();
+  const {
+    data: wallets,
+    loading: walletLoading,
+    error,
+  } = useFetchData<WalletType>("wallets", [
+    where("uid", "==", user?.uid),
+    orderBy("created", "desc"),
+  ]);
+
+  const getBalance = () => {
+    return wallets.reduce(
+      (totals: any, item: WalletType) => {
+        totals.balance += Number(item.amount);
+        totals.income += Number(item.totalIncome);
+        totals.expenses += Number(item.totalExpenses);
+        return totals;
+      },
+      { balance: 0, income: 0, expenses: 0 }
+    );
   };
-  const handledArrowUp = () => {
-    console.log("Pressed up");
-  };
+
   return (
     <ImageBackground
       source={img.card}
@@ -29,7 +50,6 @@ export const HomeCards = () => {
         <View>
           <View style={styles.totalBalance}>
             <Typo color={colors.neutral800} size={17} fontWeight={"500"}>
-              {" "}
               Total Balance
             </Typo>
             <Icons.DotsThreeOutline
@@ -39,14 +59,14 @@ export const HomeCards = () => {
             />
           </View>
           <Typo color={colors.black} size={30} fontWeight={"bold"}>
-            $563283.00
+            $ {walletLoading ? "0.00" : getBalance()?.balance?.toFixed(2)}
           </Typo>
         </View>
-        {/* total  expenses and icome */}
+        {/* Total Expenses and Income */}
         <View style={styles.stats}>
-          {/* income */}
+          {/* Income */}
           <View style={{ gap: verticalScale(5) }}>
-            <Pressable onPress={handledArrowDown} style={styles.incomeExpense}>
+            <View style={styles.incomeExpense}>
               <View style={styles.statsIcons}>
                 <Icons.ArrowDown
                   size={verticalScale(15)}
@@ -57,17 +77,16 @@ export const HomeCards = () => {
               <Typo fontWeight={"500"} color={colors.neutral700} size={17}>
                 Income
               </Typo>
-            </Pressable>
+            </View>
             <View style={{ alignSelf: "center" }}>
               <Typo fontWeight={"600"} color={colors.green} size={17}>
-                {" "}
-                $ 2342
+              $ {walletLoading ? "0.00" : getBalance()?.income?.toFixed(2)}
               </Typo>
             </View>
           </View>
-          {/* expenses */}
+          {/* Expenses */}
           <View style={{ gap: verticalScale(5) }}>
-            <Pressable onPress={handledArrowUp} style={styles.incomeExpense}>
+            <View style={styles.incomeExpense}>
               <View style={styles.statsIcons}>
                 <Icons.ArrowUp
                   size={verticalScale(15)}
@@ -78,11 +97,10 @@ export const HomeCards = () => {
               <Typo fontWeight={"500"} color={colors.neutral700} size={17}>
                 Expenses
               </Typo>
-            </Pressable>
+            </View>
             <View style={{ alignSelf: "center" }}>
               <Typo fontWeight={"600"} color={colors.rose} size={17}>
-                {" "}
-                $ 1234
+              $ {walletLoading ? "0.00" : getBalance()?.expenses?.toFixed(2)}
               </Typo>
             </View>
           </View>

@@ -1,14 +1,24 @@
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { expenseCategories } from "@/constants/data";
+import { expenseCategories, incomeCategory } from "@/constants/data";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { verticalScale } from "@/util/styling";
 import { Typo } from "./Typo";
 import { TransactionItemProps } from "@/types/types";
+import { Timestamp } from "firebase/firestore";
 
- export const TranstionItem = ({ item, index, handleClick }: TransactionItemProps) => {
-  let category = expenseCategories["groceries"];
+export const TranstionItem = ({ item, index }: TransactionItemProps) => {
+  let category =
+    item?.type == "income"
+      ? incomeCategory
+      : expenseCategories[item?.category!];
   const IconsComponent = category.icon;
+
+  const date = (item?.date as Timestamp).toDate()?.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
 
   return (
     <Animated.View
@@ -16,11 +26,7 @@ import { TransactionItemProps } from "@/types/types";
         .springify()
         .damping(14)}
     >
-      <TouchableOpacity
-        onPress={() => handleClick(item)}
-        activeOpacity={0.7}
-        style={styles.row}
-      >
+      <TouchableOpacity activeOpacity={0.7} style={styles.row}>
         <View style={[styles.icon, { backgroundColor: category.bgColor }]}>
           {IconsComponent && (
             <IconsComponent
@@ -39,15 +45,18 @@ import { TransactionItemProps } from "@/types/types";
             size={15}
             color={colors.neutral400}
           >
-            wifi payment
+            {item?.description}
           </Typo>
         </View>
         <View style={styles.amoutData}>
-          <Typo size={17} color={colors.primary} fontWeight={"500"}>
-            + $23
+          <Typo
+            fontWeight={"500"}
+            color={item?.type == "income" ? colors.primary : colors.rose}
+          >
+            {`$${item?.type == "income" ? "+$" : "-$"}${item?.amount}`}
           </Typo>
           <Typo size={13} color={colors.neutral400}>
-            2 days ago
+            {date}
           </Typo>
         </View>
       </TouchableOpacity>
@@ -55,8 +64,7 @@ import { TransactionItemProps } from "@/types/types";
   );
 };
 const styles = StyleSheet.create({
-
-  // row uso 
+  // row uso
   row: {
     flexDirection: "row",
     justifyContent: "space-between",

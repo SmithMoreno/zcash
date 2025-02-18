@@ -9,10 +9,26 @@ import { HomeCards } from "@/components/HomeCards";
 import { TransactionList } from "@/components/TransactionList";
 import { ButtomCustom } from "@/components/ButtomCustom";
 import { useRouter } from "expo-router";
+import { limit, orderBy, where } from "firebase/firestore";
+import useFetchData from "@/hooks/useFetchData";
+import { TransactionType } from "@/types/types";
 
 const Home = () => {
   const { user } = useAuth();
   const router = useRouter();
+
+  const constraints = [
+    where("uid", "==", user?.uid),
+    orderBy("date", "desc"),
+    limit(30),
+  ];
+
+  const {
+    data: recentTransactions,
+    loading: transactionLoading,
+    error,
+  } = useFetchData<TransactionType>(" transactions", constraints);
+
   return (
     <ScreenWrapper>
       <View style={styles.container}>
@@ -44,9 +60,9 @@ const Home = () => {
             <HomeCards />
           </View>
           <TransactionList
-            loading={false}
+            loading={transactionLoading}
             emptyListMessage="No transactions found"
-            data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+            data={recentTransactions}
             title="Recent Transactions"
           />
         </ScrollView>

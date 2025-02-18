@@ -14,9 +14,6 @@ export const TransactionList = ({
   loading,
   emptyListMessage,
 }: TransactionListType) => {
-  const handleClick = () => {
-    console.log("Pressed");
-  };
   return (
     <View style={styles.container}>
       {title && (
@@ -28,11 +25,7 @@ export const TransactionList = ({
         <FlashList
           data={data}
           renderItem={({ item, index }) => (
-            <TranstionItem
-              handleClick={handleClick}
-              item={item}
-              index={index}
-            />
+            <TranstionItem item={item} index={index} />
           )}
           estimatedItemSize={60}
         />

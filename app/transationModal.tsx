@@ -20,6 +20,7 @@ import { ImageUpload } from "@/components/ImageUpload";
 import { orderBy, where } from "firebase/firestore";
 import { Platform, Pressable, TouchableOpacity } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
+import { createOrUpdateTrasaction } from "@/services/transationService";
 
 const TransactionModal = () => {
   const { user } = useAuth();
@@ -54,7 +55,8 @@ const TransactionModal = () => {
   };
 
   const onSubmit = async () => {
-    const { type, amount, description, category, date, walletId, image } = transaction;
+    const { type, amount, description, category, date, walletId, image } =
+      transaction;
 
     if (!amount || !date || !walletId) {
       Alert.alert("Transaction", "Please fill all the required fields");
@@ -71,13 +73,26 @@ const TransactionModal = () => {
       image,
       uid: user?.uid,
     };
-    console.log('Transaction Data:', transactionData);
+
+    //todo: include transaction id
+    setLoading(true);
+    const res = await createOrUpdateTrasaction(transactionData);
+    setLoading(false);
+    if (res.success) {
+      router.back();
+    } else {
+      Alert.alert("Transaction", res.msg);
+    }
   };
 
   const showAlertDelete = () => {
     Alert.alert("Delete", "Are you sure you want to delete this transaction?", [
       { text: "Cancel", style: "cancel" },
-      { text: "Delete", onPress: () => console.log("Deleting..."), style: "destructive" },
+      {
+        text: "Delete",
+        onPress: () => console.log("Deleting..."),
+        style: "destructive",
+      },
     ]);
   };
 
@@ -97,7 +112,9 @@ const TransactionModal = () => {
         >
           {/* Type */}
           <View style={styles.inputContainer}>
-            <Typo size={16} color={colors.neutral200}>Type</Typo>
+            <Typo size={16} color={colors.neutral200}>
+              Type
+            </Typo>
             <Dropdown
               style={styles.dropdownContainer}
               activeColor={colors.neutral700}
@@ -119,7 +136,9 @@ const TransactionModal = () => {
 
           {/* Wallet */}
           <View style={styles.inputContainer}>
-            <Typo size={16} color={colors.neutral200}>Wallet</Typo>
+            <Typo size={16} color={colors.neutral200}>
+              Wallet
+            </Typo>
             <Dropdown
               style={styles.dropdownContainer}
               placeholderStyle={styles.dropdownPlaceholder}
@@ -147,7 +166,9 @@ const TransactionModal = () => {
           {/* Expense Category */}
           {transaction.type === "expense" && (
             <View style={styles.inputContainer}>
-              <Typo size={16} color={colors.neutral200}>Expense Category</Typo>
+              <Typo size={16} color={colors.neutral200}>
+                Expense Category
+              </Typo>
               <Dropdown
                 placeholderStyle={styles.dropdownPlaceholder}
                 placeholder="Select a category"
@@ -175,9 +196,14 @@ const TransactionModal = () => {
 
           {/* Date and Time */}
           <View style={styles.inputContainer}>
-            <Typo size={16} color={colors.neutral200}>Date</Typo>
+            <Typo size={16} color={colors.neutral200}>
+              Date
+            </Typo>
             {!isDatePickerVisible && (
-              <Pressable onPress={() => setDatePickerVisibility(true)} style={styles.dateInput}>
+              <Pressable
+                onPress={() => setDatePickerVisibility(true)}
+                style={styles.dateInput}
+              >
                 <Typo>{(transaction.date as Date).toLocaleDateString()}</Typo>
               </Pressable>
             )}
@@ -197,7 +223,9 @@ const TransactionModal = () => {
                     activeOpacity={0.7}
                     onPress={() => setDatePickerVisibility(false)}
                   >
-                    <Typo fontWeight={"500"} size={16}>Ok</Typo>
+                    <Typo fontWeight={"500"} size={16}>
+                      Ok
+                    </Typo>
                   </TouchableOpacity>
                 )}
               </View>
@@ -206,7 +234,9 @@ const TransactionModal = () => {
 
           {/* Amount */}
           <View style={styles.inputContainer}>
-            <Typo size={16} color={colors.neutral200}>Amount</Typo>
+            <Typo size={16} color={colors.neutral200}>
+              Amount
+            </Typo>
             <Input
               keyboardType="numeric"
               value={transaction.amount?.toString()}
@@ -222,8 +252,12 @@ const TransactionModal = () => {
           {/* Description */}
           <View style={styles.inputContainer}>
             <View style={styles.flexRow}>
-              <Typo size={16} color={colors.neutral200}>Description</Typo>
-              <Typo size={14} color={colors.neutral500}>[optional]</Typo>
+              <Typo size={16} color={colors.neutral200}>
+                Description
+              </Typo>
+              <Typo size={14} color={colors.neutral500}>
+                [optional]
+              </Typo>
             </View>
             <Input
               value={transaction.description}
@@ -246,8 +280,12 @@ const TransactionModal = () => {
           {/* Input Image */}
           <View style={[styles.inputContainer, { marginTop: spacingY._10 }]}>
             <View style={styles.flexRow}>
-              <Typo color={colors.neutral200} size={16}>Receipt</Typo>
-              <Typo color={colors.neutral500} size={14}>[optional]</Typo>
+              <Typo color={colors.neutral200} size={16}>
+                Receipt
+              </Typo>
+              <Typo color={colors.neutral500} size={14}>
+                [optional]
+              </Typo>
             </View>
             <ImageUpload
               file={transaction.image}
@@ -273,7 +311,11 @@ const TransactionModal = () => {
               paddingHorizontal: spacingX._15,
             }}
           >
-            <Icons.Trash size={verticalScale(24)} color={colors.white} weight="bold" />
+            <Icons.Trash
+              size={verticalScale(24)}
+              color={colors.white}
+              weight="bold"
+            />
           </ButtomCustom>
         )}
 
