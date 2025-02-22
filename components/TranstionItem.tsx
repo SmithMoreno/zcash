@@ -54,7 +54,7 @@ export const TranstionItem = ({ item, index }: TransactionItemProps) => {
             fontWeight={"500"}
             color={item?.type == "income" ? colors.primary : colors.rose}
           >
-            {`$${item?.type == "income" ? "+$" : "-$"}${item?.amount}`}
+            {`$${item?.type == "income" ? "+" : "-"}${item?.amount}`}
           </Typo>
           <Typo size={13} color={colors.neutral400}>
             {date}
