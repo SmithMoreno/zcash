@@ -14,6 +14,8 @@ export const TransactionList = ({
   loading,
   emptyListMessage,
 }: TransactionListType) => {
+
+ const  handleClick = () => {};
   return (
     <View style={styles.container}>
       {title && (

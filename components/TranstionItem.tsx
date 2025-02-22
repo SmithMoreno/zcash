@@ -9,10 +9,11 @@ import { Timestamp } from "firebase/firestore";
 
 export const TranstionItem = ({ item, index }: TransactionItemProps) => {
   let category =
-    item?.type == "income"
-      ? incomeCategory
-      : expenseCategories[item?.category!];
-  const IconsComponent = category.icon;
+  item?.type === "income"
+    ? incomeCategory
+    : item?.category && expenseCategories[item.category] 
+      ? expenseCategories[item.category] 
+      : { icon: null, label: "Desconocido", bgColor: colors.neutral600 };
 
   const date = (item?.date as Timestamp).toDate()?.toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -28,8 +29,8 @@ export const TranstionItem = ({ item, index }: TransactionItemProps) => {
     >
       <TouchableOpacity activeOpacity={0.7} style={styles.row}>
         <View style={[styles.icon, { backgroundColor: category.bgColor }]}>
-          {IconsComponent && (
-            <IconsComponent
+          {category.icon && (
+            <category.icon
               size={verticalScale(25)}
               color={colors.white}
               weight="bold"

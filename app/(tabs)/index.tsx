@@ -27,7 +27,7 @@ const Home = () => {
     data: recentTransactions,
     loading: transactionLoading,
     error,
-  } = useFetchData<TransactionType>(" transactions", constraints);
+  } = useFetchData<TransactionType>("transactions", constraints);
 
   return (
     <ScreenWrapper>
@@ -60,9 +60,9 @@ const Home = () => {
             <HomeCards />
           </View>
           <TransactionList
+            data={recentTransactions}
             loading={transactionLoading}
             emptyListMessage="No transactions found"
-            data={recentTransactions}
             title="Recent Transactions"
           />
         </ScrollView>

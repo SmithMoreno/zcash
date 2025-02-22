@@ -167,7 +167,7 @@ const TransactionModal = () => {
           {transaction.type === "expense" && (
             <View style={styles.inputContainer}>
               <Typo size={16} color={colors.neutral200}>
-                Expense Category
+                {transaction.type === "expense" ? "category" : "Income"}
               </Typo>
               <Dropdown
                 placeholderStyle={styles.dropdownPlaceholder}

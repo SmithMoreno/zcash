@@ -16,6 +16,66 @@ export const createOrUpdateTrasaction = async (
       //todo: update existing transaction
     } else {
       //update wallet for new transaction
+
+      let updateWalletForNewTransation = async (
+        walletId: string,
+        amount: number,
+        type: string
+      ) => {
+        try {
+          console.log("🟢 Iniciando actualización de la wallet...");
+      
+          const walletRef = doc(firestore, "wallets", walletId);
+          const walletSnapshot = await getDoc(walletRef);
+          
+          if (!walletSnapshot.exists()) {
+            console.log("🔴 Wallet no encontrada");
+            return { success: false, msg: "Wallet not found" };
+          }
+      
+          console.log("🟢 Wallet encontrada, datos actuales:", walletSnapshot.data());
+      
+          const walletData = walletSnapshot.data() as WalletType;
+      
+          if (type === "expense" && walletData.amount! - amount < 0) {
+            console.log("🔴 Saldo insuficiente para el gasto");
+            return {
+              success: false,
+              msg: "Selected amount doesn't have enough balance",
+            };
+          }
+      
+          const updateType = type === "income" ? "totalIncome" : "totalExpenses";
+          
+          // 🛠 Aquí puede estar el error: revisamos valores antes de actualizar
+          const updateWalletAmount =
+            type === "income"
+              ? Number(walletData.amount) + amount
+              : Number(walletData.amount) - amount;
+      
+          const updateTotals =
+            type === "income"
+              ? Number(walletData.totalIncome) + amount
+              : Number(walletData.totalExpenses) + amount;
+      
+          console.log("🟢 Valores calculados para actualizar:");
+          console.log("Nuevo saldo:", updateWalletAmount);
+          console.log(updateType, ":", updateTotals);
+      
+          await updateDoc(walletRef, {
+            amount: updateWalletAmount,
+            [updateType]: updateTotals,
+          });
+      
+          console.log("✅ Wallet actualizada correctamente");
+      
+          return { success: true };
+        } catch (error: any) {
+          console.log("🔴 Error al actualizar la wallet:", error);
+          return { success: false, msg: error.message };
+        }
+      };
+      
       let res = await updateWalletForNewTransation(
         walletId!,
         Number(amount!),
@@ -48,50 +108,6 @@ export const createOrUpdateTrasaction = async (
     };
   } catch (error: any) {
     console.log("error creatin or updating transaction", error);
-    return { success: false, msg: error.message };
-  }
-};
-
-const updateWalletForNewTransation = async (
-  walletId: string,
-  amount: number,
-  type: string
-) => {
-  try {
-    const walletRef = doc(firestore, "wallets", walletId);
-    const walletSnapshot = await getDoc(walletRef);
-    if (!walletSnapshot.exists()) {
-      console.log("updating wallet for new transaction");
-      return { success: false, msg: "Wallet not found" };
-    }
-
-    const walletData = walletSnapshot.data() as WalletType;
-    if (type === "expense" && walletData.amount! - amount < 0) {
-      return {
-        success: false,
-        msg: "Selected amount dont have enough balance",
-      };
-    }
-
-    const updateType = type == "income" ? "totalIncome" : "totalExpense";
-    const updateWalletAmount =
-      type == "income"
-        ? Number(walletData.amount) + amount
-        : Number(walletData.amount) - amount;
-
-    const updateTotals =
-      type == "income"
-        ? Number(walletData.totalIncome) + amount
-        : Number(walletData.totalExpenses) - amount;
-
-    await updateDoc(walletRef, {
-      amount: updateWalletAmount,
-      [updateType]: updateTotals,
-    });
-
-    return { success: true };
-  } catch (error: any) {
-    console.log("updating wallet for new transaction", error);
     return { success: false, msg: error.message };
   }
 };

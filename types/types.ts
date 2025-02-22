@@ -104,6 +104,7 @@ export type TransactionListType = {
 };
 
 export type TransactionItemProps = {
+  
   item: TransactionType;
   index: number;
 

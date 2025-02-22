@@ -30,9 +30,9 @@ export const HomeCards = () => {
   const getBalance = () => {
     return wallets.reduce(
       (totals: any, item: WalletType) => {
-        totals.balance += Number(item.amount);
-        totals.income += Number(item.totalIncome);
-        totals.expenses += Number(item.totalExpenses);
+        totals.balance = totals.balance + Number (item.amount);
+        totals.income = totals.income + Number (item.totalIncome);
+        totals.expenses = totals.expenses + Number (item.totalExpenses);
         return totals;
       },
       { balance: 0, income: 0, expenses: 0 }
@@ -80,7 +80,7 @@ export const HomeCards = () => {
             </View>
             <View style={{ alignSelf: "center" }}>
               <Typo fontWeight={"600"} color={colors.green} size={17}>
-              $ {walletLoading ? "0.00" : getBalance()?.income?.toFixed(2)}
+                $ {walletLoading ? "0.00" : getBalance()?.income?.toFixed(2)}
               </Typo>
             </View>
           </View>
@@ -100,7 +100,7 @@ export const HomeCards = () => {
             </View>
             <View style={{ alignSelf: "center" }}>
               <Typo fontWeight={"600"} color={colors.rose} size={17}>
-              $ {walletLoading ? "0.00" : getBalance()?.expenses?.toFixed(2)}
+                $ {walletLoading ? "0.00" : getBalance()?.expenses?.toFixed(2)}
               </Typo>
             </View>
           </View>
